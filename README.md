@@ -1,4 +1,4 @@
-# Bike sharing prediction model
+# Bike sharing prediction model - Adilet Gaparov
 
 ## Usage
 

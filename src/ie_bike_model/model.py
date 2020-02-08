@@ -9,6 +9,7 @@ import pandas as pd
 from pandas.tseries.holiday import USFederalHolidayCalendar as calendar
 from scipy.stats import skew
 from xgboost import XGBRegressor
+from sklearn.linear_model import Ridge
 
 from ie_bike_model.util import read_data, get_season, get_model_path
 
@@ -163,6 +164,26 @@ def train_xgboost(hour):
     xgb.fit(hour_d_train_x, hour_d_train_y)
     return xgb
 
+def train_ridge(hour):
+    # Avoid modifying the original dataset at the cost of RAM
+    hour = hour.copy()
+
+    hour_d = pd.get_dummies(hour)
+    regex = re.compile(r"\[|\]|<", re.IGNORECASE)
+    hour_d.columns = [
+        regex.sub("_", col) if any(x in str(col) for x in set(("[", "]", "<"))) else col
+        for col in hour_d.columns.values
+    ]
+
+    hour_d = hour_d.select_dtypes(exclude="category")
+
+    hour_d_train_x, _, hour_d_train_y, _, = split_train_test(hour_d)
+
+    ridge = Ridge()
+
+    ridge.fit(hour_d_train_x, hour_d_train_y)
+    return ridge
+
 
 def postprocess(hour):
     # Avoid modifying the original dataset at the cost of RAM
@@ -172,14 +193,17 @@ def postprocess(hour):
     return hour
 
 
-def train_and_persist(model_dir=None, hour_path=None):
+def train_and_persist(model_dir=None, hour_path=None, model='xgboost'):
     hour = read_data(hour_path)
     hour = preprocess(hour)
     hour = dummify(hour)
     hour = postprocess(hour)
 
     # TODO: Implement other models?
-    model = train_xgboost(hour)
+    if model == 'xgboost':
+        model = train_xgboost(hour)
+    elif model == 'ridge':
+        model = train_ridge(hour)
 
     model_path = get_model_path(model_dir)
 

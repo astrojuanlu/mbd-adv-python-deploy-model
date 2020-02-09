@@ -160,6 +160,7 @@ def train_xgboost(hour):
         seed=1234,
         gamma=1,
     )
+    
 
     xgb.fit(hour_d_train_x, hour_d_train_y)
     return xgb
@@ -179,7 +180,7 @@ def train_ridge(hour):
 
     hour_d_train_x, _, hour_d_train_y, _, = split_train_test(hour_d)
 
-    ridge = Ridge()
+    ridge = Ridge(random_state=1234)
 
     ridge.fit(hour_d_train_x, hour_d_train_y)
     return ridge
@@ -256,7 +257,8 @@ def predict(parameters, model_dir=None, model='xgboost'):
     """Returns model prediction.
 
     """
-    model_path = get_model_path(model_dir)
+    model_path = get_model_path(model_dir, model)
+    
     if not os.path.exists(model_path):
         train_and_persist(model_dir=model_dir, model=model)
 

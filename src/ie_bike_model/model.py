@@ -199,15 +199,15 @@ def train_and_persist(model_dir=None, hour_path=None, model='xgboost'):
     hour = dummify(hour)
     hour = postprocess(hour)
 
-    # TODO: Implement other models?
+    model_path = get_model_path(model_dir, model)
+    
     if model == 'xgboost':
-        model = train_xgboost(hour)
+        scikit_model = train_xgboost(hour)
+        
     elif model == 'ridge':
-        model = train_ridge(hour)
-
-    model_path = get_model_path(model_dir)
-
-    joblib.dump(model, model_path)
+        scikit_model = train_ridge(hour)
+    
+    joblib.dump(scikit_model, model_path)
 
 
 def get_input_dict(parameters):
@@ -252,13 +252,13 @@ def get_input_dict(parameters):
     return df.iloc[0].to_dict()
 
 
-def predict(parameters, model_dir=None):
+def predict(parameters, model_dir=None, model='xgboost'):
     """Returns model prediction.
 
     """
     model_path = get_model_path(model_dir)
     if not os.path.exists(model_path):
-        train_and_persist(model_dir)
+        train_and_persist(model_dir=model_dir, model=model)
 
     model = joblib.load(model_path)
 

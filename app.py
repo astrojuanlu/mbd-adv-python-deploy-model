@@ -22,5 +22,6 @@ def get_predict():
     parameters["humidity"] = float(parameters["humidity"])
     parameters["windspeed"] = float(parameters["windspeed"])
 
-    result = predict(parameters)
+    result = predict(parameters, model=str(parameters['model']))
+    
     return {"result": result}

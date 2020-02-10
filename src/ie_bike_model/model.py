@@ -150,7 +150,7 @@ def train_xgboost(hour):
 
     hour_d_train_x, _, hour_d_train_y, _, = split_train_test(hour_d)
 
-    #xgb = XGBRegressor(
+    # xgb = XGBRegressor(
     #    max_depth=3,
     #    learning_rate=0.01,
     #    n_estimators=15,
@@ -159,8 +159,8 @@ def train_xgboost(hour):
     #    colsample_bytree=1,
     #    seed=1234,
     #    gamma=1,
-    #)
-    
+    # )
+
     xgb = XGBRegressor(
         max_depth=6,
         learning_rate=0.06,
@@ -171,12 +171,12 @@ def train_xgboost(hour):
         seed=1234,
         gamma=1.5,
     )
-    
 
     xgb.fit(hour_d_train_x, hour_d_train_y)
     score = xgb.score(hour_d_train_x, hour_d_train_y)
-    
+
     return xgb, score
+
 
 def train_ridge(hour):
     # Avoid modifying the original dataset at the cost of RAM
@@ -197,7 +197,7 @@ def train_ridge(hour):
 
     ridge.fit(hour_d_train_x, hour_d_train_y)
     score = ridge.score(hour_d_train_x, hour_d_train_y)
-    
+
     return ridge, score
 
 
@@ -209,22 +209,22 @@ def postprocess(hour):
     return hour
 
 
-def train_and_persist(model_dir=None, hour_path=None, model='xgboost'):
+def train_and_persist(model_dir=None, hour_path=None, model="xgboost"):
     hour = read_data(hour_path)
     hour = preprocess(hour)
     hour = dummify(hour)
     hour = postprocess(hour)
 
     model_path = get_model_path(model_dir, model)
-    
-    if model == 'xgboost':
+
+    if model == "xgboost":
         scikit_model, score = train_xgboost(hour)
-        
-    elif model == 'ridge':
+
+    elif model == "ridge":
         scikit_model, score = train_ridge(hour)
-    
+
     joblib.dump(scikit_model, model_path)
-    
+
     return score
 
 
@@ -270,12 +270,12 @@ def get_input_dict(parameters):
     return df.iloc[0].to_dict()
 
 
-def predict(parameters, model_dir=None, model='xgboost'):
+def predict(parameters, model_dir=None, model="xgboost"):
     """Returns model prediction.
 
     """
     model_path = get_model_path(model_dir, model)
-    
+
     if not os.path.exists(model_path):
         train_and_persist(model_dir=model_dir, model=model)
 

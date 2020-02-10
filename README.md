@@ -2,14 +2,13 @@
 
 ## Usage
 
-To install the library:
+Before running the Flask application, you will need to install the library ie_bike_model by running the command below in the directory of the application:
 
 ```
-$ # pip install ie_bike_model  # If I ever upload this to PyPI, which I won't
 $ pip install .
 ```
 
-Basic usage:
+To test the library, you can run the following code:
 
 ```python
 >>> import datetime as dt
@@ -23,8 +22,52 @@ Basic usage:
 ...     "humidity": 81.0,
 ...     "windspeed": 0.0,
 ... })
-1
+24
 ```
+
+To run the app:
+
+```
+$ flask run
+```
+
+To verify that Flask runs correctly, enter the following url in the browser:
+
+```
+http://localhost:5000/
+```
+
+that should show "Hello, World!" message. The main route accepts parameter "name" that will replace "World". For example, the following code will print "Hello, Adilet!":
+
+```
+http://localhost:5000/?name=Adilet
+```
+
+To check the R-squared scores of Ridge and XGBoost models on training set:
+
+```
+http://localhost:5000/train
+```
+
+To get the predictions for default parameters:
+
+```
+http://localhost:5000/predict
+```
+
+The API accepts the following parameters:
+* date: date in ISO format (YYYY-MM-DD)
+* weathersit: category of weather (1,2,3,4)
+1: Clear, Few clouds, Partly cloudy, Partly cloudy
+2: Mist + Cloudy, Mist + Broken clouds, Mist + Few clouds, Mist
+3: Light Snow, Light Rain + Thunderstorm + Scattered clouds, Light Rain + Scattered clouds
+4: Heavy Rain + Ice Pallets + Thunderstorm + Mist, Snow + Fog
+* temperature_C: temperature in Celsius
+* feeling_temperature_C: feeling temperature in Celsius
+* humidity: humidity level
+* windspeed: wind speed in m/s
+
+When _date_ is not given, the API takes **tomorrow**. When _weathersit_ is not given, the API takes the **median** value for the given month from training set. If other parameters are not given, the API takes the **mean** value for the given month.  
 
 ## Development
 
@@ -45,7 +88,3 @@ To measure the coverage:
 ```
 $ pytest --cov=ie_bike_model
 ```
-
-## Trivia
-
-Total implementation time: **4 hours 30 minutes** 🏁

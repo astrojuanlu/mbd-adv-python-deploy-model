@@ -4,8 +4,6 @@ from flask import Flask, request
 from ie_bike_model.model import predict, train_and_persist
 from ie_bike_model.util import read_data
 
-import datetime as dt
-
 app = Flask(__name__)
 
 

@@ -150,20 +150,33 @@ def train_xgboost(hour):
 
     hour_d_train_x, _, hour_d_train_y, _, = split_train_test(hour_d)
 
+    #xgb = XGBRegressor(
+    #    max_depth=3,
+    #    learning_rate=0.01,
+    #    n_estimators=15,
+    #    objective="reg:squarederror",
+    #    subsample=0.8,
+    #    colsample_bytree=1,
+    #    seed=1234,
+    #    gamma=1,
+    #)
+    
     xgb = XGBRegressor(
-        max_depth=3,
-        learning_rate=0.01,
-        n_estimators=15,
+        max_depth=6,
+        learning_rate=0.06,
+        n_estimators=50,
         objective="reg:squarederror",
         subsample=0.8,
-        colsample_bytree=1,
+        colsample_bytree=0.5,
         seed=1234,
-        gamma=1,
+        gamma=1.5,
     )
     
 
     xgb.fit(hour_d_train_x, hour_d_train_y)
-    return xgb
+    score = xgb.score(hour_d_train_x, hour_d_train_y)
+    
+    return xgb, score
 
 def train_ridge(hour):
     # Avoid modifying the original dataset at the cost of RAM
@@ -183,7 +196,9 @@ def train_ridge(hour):
     ridge = Ridge(random_state=1234)
 
     ridge.fit(hour_d_train_x, hour_d_train_y)
-    return ridge
+    score = ridge.score(hour_d_train_x, hour_d_train_y)
+    
+    return ridge, score
 
 
 def postprocess(hour):
@@ -203,12 +218,14 @@ def train_and_persist(model_dir=None, hour_path=None, model='xgboost'):
     model_path = get_model_path(model_dir, model)
     
     if model == 'xgboost':
-        scikit_model = train_xgboost(hour)
+        scikit_model, score = train_xgboost(hour)
         
     elif model == 'ridge':
-        scikit_model = train_ridge(hour)
+        scikit_model, score = train_ridge(hour)
     
     joblib.dump(scikit_model, model_path)
+    
+    return score
 
 
 def get_input_dict(parameters):

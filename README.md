@@ -58,10 +58,12 @@ http://localhost:5000/predict
 The API accepts the following parameters:
 * date: date in ISO format (YYYY-MM-DD)
 * weathersit: category of weather (1,2,3,4)
+
 1: Clear, Few clouds, Partly cloudy, Partly cloudy
 2: Mist + Cloudy, Mist + Broken clouds, Mist + Few clouds, Mist
 3: Light Snow, Light Rain + Thunderstorm + Scattered clouds, Light Rain + Scattered clouds
 4: Heavy Rain + Ice Pallets + Thunderstorm + Mist, Snow + Fog
+
 * temperature_C: temperature in Celsius
 * feeling_temperature_C: feeling temperature in Celsius
 * humidity: humidity level

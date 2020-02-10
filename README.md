@@ -31,7 +31,7 @@ To run the app:
 $ flask run
 ```
 
-To verify that Flask runs correctly, enter the following url in the browser:
+To verify that Flask runs correctly, enter the following URL in the browser:
 
 ```
 http://localhost:5000/
@@ -69,7 +69,7 @@ The API accepts the following parameters:
 * humidity: humidity level
 * windspeed: wind speed in m/s
 
-When _date_ is not given, the API takes **tomorrow**. When _weathersit_ is not given, the API takes the **median** value for the given month from training set. If other parameters are not given, the API takes the **mean** value for the given month.  
+When _date_ is not given, the API takes **tomorrow**. When _weathersit_ is not given, the API takes the **median** value for the given month from the training set. If other parameters are not given, the API takes the **mean** value for the given month.  
 
 ## Development
 
